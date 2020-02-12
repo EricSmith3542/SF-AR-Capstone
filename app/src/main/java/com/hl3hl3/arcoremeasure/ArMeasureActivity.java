@@ -95,21 +95,7 @@ public class ArMeasureActivity extends AppCompatActivity {
     private final ImageView[] ivCubeIconList = new ImageView[MAX_CUBE_COUNT];
     private final int[] cubeIconIdArray = {
             R.id.iv_cube1,
-            R.id.iv_cube2,
-            R.id.iv_cube3,
-            R.id.iv_cube4,
-            R.id.iv_cube5,
-            R.id.iv_cube6,
-            R.id.iv_cube7,
-            R.id.iv_cube8,
-            R.id.iv_cube9,
-            R.id.iv_cube10,
-            R.id.iv_cube11,
-            R.id.iv_cube12,
-            R.id.iv_cube13,
-            R.id.iv_cube14,
-            R.id.iv_cube15,
-            R.id.iv_cube16
+            R.id.iv_cube2
     };
 
     // Tap handling and UI.
@@ -948,11 +934,11 @@ public class ArMeasureActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     int nowSelectIndex = glSerfaceRenderer.getNowTouchingPointIndex();
-                    for(int i = 0; i<ivCubeIconList.length && i< anchors.size(); i++){
+                    for(int i = 0; i<2 && i< anchors.size(); i++){
                         ivCubeIconList[i].setEnabled(true);
                         ivCubeIconList[i].setActivated(i == nowSelectIndex);
                     }
-                    for(int i = anchors.size(); i<ivCubeIconList.length; i++){
+                    for(int i = anchors.size(); i<2; i++){
                         ivCubeIconList[i].setEnabled(false);
                     }
                 }
