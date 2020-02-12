@@ -728,7 +728,7 @@ public class ArMeasureActivity extends AppCompatActivity {
                                         == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL)) {
                             // Cap the number of objects created. This avoids overloading both the
                             // rendering system and ARCore.
-                            if (anchors.size() >= 16) {
+                            if (anchors.size() >= 2) {
                                 anchors.get(0).detach();
                                 anchors.remove(0);
 
