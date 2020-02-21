@@ -44,6 +44,7 @@ import com.google.ar.core.examples.java.helloar.rendering.BackgroundRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.ObjectRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.PlaneRenderer;
 import com.google.ar.core.examples.java.helloar.rendering.PointCloudRenderer;
+import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.NotTrackingException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
@@ -51,6 +52,7 @@ import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 import com.hl3hl3.arcoremeasure.renderer.RectanglePolygonRenderer;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -107,6 +109,8 @@ public class ArMeasureActivity extends AppCompatActivity {
 
     private ArrayBlockingQueue<Float> queuedScrollDx = new ArrayBlockingQueue<>(MAX_CUBE_COUNT);
     private ArrayBlockingQueue<Float> queuedScrollDy = new ArrayBlockingQueue<>(MAX_CUBE_COUNT);
+
+    private double extractedTotal;
 
     private void log(String tag, String log){
         if(BuildConfig.DEBUG) {
@@ -303,7 +307,13 @@ public class ArMeasureActivity extends AppCompatActivity {
 
         showLoadingMessage();
         // Note that order matters - see the note in onPause(), the reverse applies here.
-        session.resume();
+        try{
+            session.resume();
+        }
+        catch (CameraNotAvailableException e)
+        {
+            e.printStackTrace();
+        }
         surfaceView.onResume();
         displayRotationHelper.onResume();
     }
@@ -651,7 +661,7 @@ public class ArMeasureActivity extends AppCompatActivity {
                 // Check if we detected at least one plane. If so, hide the loading message.
                 if (messageSnackbar != null) {
                     for (Plane plane : session.getAllTrackables(Plane.class)) {
-                        if (plane.getType() == com.google.ar.core.Plane.Type.HORIZONTAL_UPWARD_FACING &&
+                        if (plane.getType() == Plane.Type.HORIZONTAL_UPWARD_FACING &&
                                 plane.getTrackingState() == TrackingState.TRACKING) {
                             hideLoadingMessage();
                             break;
@@ -696,9 +706,15 @@ public class ArMeasureActivity extends AppCompatActivity {
                         point0 = point1;
                     }
 
+                    extractedTotal = total;
+
+
+
                     // show result
                     String result = sb.toString().replaceFirst("[+]", "") + " = " + (((int)(total * 10f))/10f) + "cm";
                     showResult(result);
+
+                    //Log.d("RESULT", "Total measurement is " + extractedTotal);
                 }
 
                 // check if there is any touch event
