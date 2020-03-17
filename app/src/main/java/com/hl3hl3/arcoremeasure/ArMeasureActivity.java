@@ -297,6 +297,7 @@ public class ArMeasureActivity extends AppCompatActivity {
 
             // Create default config and check if supported.
             Config config = new Config(session);
+            config.setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL);
             if (!session.isSupported(config)) {
                 showSnackbarMessage("This device does not support AR", true);
             }
