@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidStudioProjects-SF-AR-Capstone.iml" filepath="$PROJECT_DIR$/AndroidStudioProjects-SF-AR-Capstone.iml" group="SF-AR-Capstone" />
       <module fileurl="file://$PROJECT_DIR$/SF-AR-Capstone.iml" filepath="$PROJECT_DIR$/SF-AR-Capstone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/SF-AR-Capstone-app.iml" filepath="$PROJECT_DIR$/app/SF-AR-Capstone-app.iml" group="SF-AR-Capstone/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
