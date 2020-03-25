@@ -1,6 +1,7 @@
 package com.hl3hl3.arcoremeasure;
 
 import android.content.Context;
+import android.content.Intent;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -204,16 +205,21 @@ public class ArMeasureActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                logStatus("click fab");
-                PopupWindow popUp = getPopupWindow();
-//                popUp.showAsDropDown(v, 0, 0); // show popup like dropdown list
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    float screenWidth = getResources().getDisplayMetrics().widthPixels;
-                    float screenHeight = getResources().getDisplayMetrics().heightPixels;
-                    popUp.showAtLocation(v, Gravity.NO_GRAVITY, (int)screenWidth/2, (int)screenHeight/2);
-                } else {
-                    popUp.showAsDropDown(v);
-                }
+                Intent intent = new Intent();
+                intent.putExtra("RESULT", extractedTotal);
+
+                setResult(RESULT_OK, intent);
+                finish();
+//                logStatus("click fab");
+//                PopupWindow popUp = getPopupWindow();
+////                popUp.showAsDropDown(v, 0, 0); // show popup like dropdown list
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    float screenWidth = getResources().getDisplayMetrics().widthPixels;
+//                    float screenHeight = getResources().getDisplayMetrics().heightPixels;
+//                    popUp.showAtLocation(v, Gravity.NO_GRAVITY, (int)screenWidth/2, (int)screenHeight/2);
+//                } else {
+//                    popUp.showAsDropDown(v);
+//                }
             }
         });
         fab.hide();
