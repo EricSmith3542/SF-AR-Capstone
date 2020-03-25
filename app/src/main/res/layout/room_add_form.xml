@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="45dp">
+
+    <TextView
+        android:id="@+id/room_add_alert_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter room name"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:id="@+id/room_add_alert_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/room_add_alert_title"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:layout_marginTop="15dp"
+        android:hint="Enter room name" />
+
+    <Button
+        android:id="@+id/room_add_alert_button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Cancel"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/room_add_alert_edit"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="15dp"/>
+
+    <Button
+        android:id="@+id/room_add_alert_button_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Submit"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/room_add_alert_edit"
+        android:layout_toRightOf="@+id/room_add_alert_button_cancel"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="65dp"/>
+
+</RelativeLayout>

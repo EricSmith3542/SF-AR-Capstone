@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="separateLine">0.5dp</dimen>
+    <dimen name="furnitureLine">0.5dp</dimen>
+</resources>
