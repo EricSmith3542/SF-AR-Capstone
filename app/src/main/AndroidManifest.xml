@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.hl3hl3.arcoremeasure.ArMeasureActivity"
+            android:name="com.hl3hl3.arcoremeasure.MainActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.AppCompat.NoActionBar"
@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ArMeasureActivity"></activity>
+        <activity android:name=".furniture"></activity>
+        <activity android:name=".furnitureDetail"></activity>
         <!-- This tag indicates that this application requires ARCore.  This results in the Google Play
                  Store downloading and installing ARCore along with the application. -->
         <meta-data android:name="com.google.ar.core" android:value="required" />
