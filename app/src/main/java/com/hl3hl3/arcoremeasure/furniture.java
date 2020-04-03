@@ -15,26 +15,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class furniture extends AppCompatActivity implements furnitureAdapter.furnitureClickListener {
 
-    private RecyclerView furniture_list;
+    private String room_name;
+    private RecyclerView furniture_recycle_view;
+    private ArrayList<String> furniture_list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_furniture);
-        furniture_list = findViewById(R.id.furniture_list);
-        furniture_list.setLayoutManager(new LinearLayoutManager(furniture.this));
-        furniture_list.addItemDecoration(new furnitureSpl());
-        furniture_list.setAdapter(new furnitureAdapter(furniture.this, this));
+
+        room_name = getIntent().getStringExtra("ROOM_NAME");
+
+        //TODO: Use database to populate furniture list here
+
+        furniture_recycle_view = findViewById(R.id.furniture_list);
+        furniture_recycle_view.setLayoutManager(new LinearLayoutManager(furniture.this));
+        furniture_recycle_view.addItemDecoration(new furnitureSpl());
+        furniture_recycle_view.setAdapter(new furnitureAdapter(furniture.this, this, furniture_list));
     }
 
     @Override
     public void furnitureClick(int position) {
         //go to furniture detail
         Intent intent = new Intent(this, furnitureDetail.class);
+
+        intent.putExtra("ROOM_NAME", room_name);
+        intent.putExtra("FURNITURE_NAME", furniture_list.get(position));
+
         startActivity(intent);
     }
 
@@ -57,7 +69,7 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         AlertDialog.Builder add_furniture = new AlertDialog.Builder(furniture.this);
         View view = LayoutInflater.from(furniture.this).inflate(R.layout.furniture_added_form, null);
-        EditText enter_furniture_name = view.findViewById(R.id.furniture_add_alert_edit);
+        final EditText enter_furniture_name = view.findViewById(R.id.furniture_add_alert_edit);
         Button cancel = view.findViewById(R.id.furniture_add_alert_button_cancel);
         Button submit = view.findViewById(R.id.furniture_add_alert_button_submit);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +82,12 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
             @Override
             public void onClick(View v) {
                 //submit
+                String name = enter_furniture_name.getText().toString();
+                furniture_list.add(name);
+                furnitureAdapter adapter = (furnitureAdapter) furniture_recycle_view.getAdapter();
+                adapter.notifyItemInserted(adapter.getItemCount());
+
+                //TODO: Add the new item to the database
             }
         });
         add_furniture.setView(view).show();

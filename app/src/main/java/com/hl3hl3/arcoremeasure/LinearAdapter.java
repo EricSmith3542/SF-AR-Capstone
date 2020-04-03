@@ -13,16 +13,19 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.LinearViewHolder> {
 
     private Context roomContext;
     private itemClickListener itemClick;
-    //private List<string> roomlist;
+    private ArrayList<String> roomlist;
 
-    public LinearAdapter(Context context, itemClickListener itemClickListener)
+    public LinearAdapter(Context context, itemClickListener itemClickListener, ArrayList<String> roomlist)
     {
         this.roomContext = context;
         this.itemClick = itemClickListener;
+        this.roomlist = roomlist;
     }
 
     @Override
@@ -33,12 +36,12 @@ public class LinearAdapter extends RecyclerView.Adapter<LinearAdapter.LinearView
 
     @Override
     public void onBindViewHolder(@NonNull LinearAdapter.LinearViewHolder holder, int position) {
-        holder.roomName.setText("RoomName");
+        holder.roomName.setText(roomlist.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 30;
+        return roomlist.size();
     }
 
     public class LinearViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

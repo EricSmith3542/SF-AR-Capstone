@@ -8,16 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class furnitureAdapter extends RecyclerView.Adapter<furnitureAdapter.LinearViewHolder> {
 
     private Context context;
     private furnitureClickListener furnitureClick;
+    private ArrayList<String> furniture_list;
 
-    public furnitureAdapter(Context context, furnitureClickListener furnitureClick)
+    public furnitureAdapter(Context context, furnitureClickListener furnitureClick, ArrayList<String> furniture_list)
     {
         this.context = context;
         this.furnitureClick = furnitureClick;
+        this.furniture_list = furniture_list;
     }
 
 
@@ -28,12 +32,12 @@ public class furnitureAdapter extends RecyclerView.Adapter<furnitureAdapter.Line
 
     @Override
     public void onBindViewHolder(@NonNull furnitureAdapter.LinearViewHolder holder, int position) {
-        holder.furnatureName.setText("furnitureName");
+        holder.furnatureName.setText(furniture_list.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 30;
+        return furniture_list.size();
     }
 
     public class LinearViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener

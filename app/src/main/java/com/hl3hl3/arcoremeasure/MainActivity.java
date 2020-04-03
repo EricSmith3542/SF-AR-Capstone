@@ -16,23 +16,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements LinearAdapter.itemClickListener {
 
     private RecyclerView room_List;
+    private ArrayList<String> rooms = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //TODO: Populate array with database
+
         room_List = findViewById(R.id.room_list);
         room_List.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         room_List.addItemDecoration(new separateLine());
-        room_List.setAdapter(new LinearAdapter(MainActivity.this, this));
+        room_List.setAdapter(new LinearAdapter(MainActivity.this, this, rooms));
     }
 
     @Override
     public void itemClick(int position) {
         Intent intent = new Intent(this, furniture.class);
+        intent.putExtra("ROOM_NAME", rooms.get(position));
         startActivity(intent);
     }
 
@@ -55,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         AlertDialog.Builder add_room = new AlertDialog.Builder(MainActivity.this);
         View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.room_add_form, null);
-        EditText enter_room_name = view.findViewById(R.id.room_add_alert_edit);
+        final EditText enter_room_name = view.findViewById(R.id.room_add_alert_edit);
         Button cancel = view.findViewById(R.id.room_add_alert_button_cancel);
         Button submit = view.findViewById(R.id.room_add_alert_button_submit);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +75,12 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
             @Override
             public void onClick(View v) {
                 //submit
+                String name = enter_room_name.getText().toString();
+                rooms.add(name);
+                LinearAdapter adapter = (LinearAdapter) room_List.getAdapter();
+                adapter.notifyItemInserted(adapter.getItemCount());
+
+                //TODO: Add the new item to the database
             }
         });
         add_room.setView(view).show();
