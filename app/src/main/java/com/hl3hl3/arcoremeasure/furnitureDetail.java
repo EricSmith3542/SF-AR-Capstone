@@ -61,14 +61,14 @@ public class furnitureDetail extends AppCompatActivity {
             double result = data.getDoubleExtra("RESULT", -1);
 
             TextView width = findViewById(R.id.width);
-            width.setText("Width: " + result);
+            width.setText("Width: " + String.format("%.2f", result));
         }
         else if(requestCode == 1)
         {
             double result = data.getDoubleExtra("RESULT", -1);
 
             TextView width = findViewById(R.id.length);
-            width.setText("Length: " + result);
+            width.setText("Length: " + String.format("%.2f", result));
         }
     }
 }
