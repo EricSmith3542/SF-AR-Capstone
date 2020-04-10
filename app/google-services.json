@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "301645936414",
+    "firebase_url": "https://ar-home-mapping.firebaseio.com",
+    "project_id": "ar-home-mapping",
+    "storage_bucket": "ar-home-mapping.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301645936414:android:4b820689f8cef9f6583b0f",
+        "android_client_info": {
+          "package_name": "com.hl3hl3.arcoremeasure"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301645936414-m5jnr5p3qo3t4efsevder6pde4njq1dv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANxYA5ZxZVotEJLmBlwzDy7w4fu93Fr4s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "301645936414-m5jnr5p3qo3t4efsevder6pde4njq1dv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

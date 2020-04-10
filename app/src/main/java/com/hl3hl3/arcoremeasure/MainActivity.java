@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
         room_List.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         room_List.addItemDecoration(new separateLine());
         room_List.setAdapter(new LinearAdapter(MainActivity.this, this, rooms));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(room_List);
     }
 
     @Override
@@ -86,4 +89,25 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
         add_room.setView(view).show();
         return super.onOptionsItemSelected(item);
     }
+
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            //Remove swiped item from list and notify the RecyclerView
+
+            if(swipeDir == 4 || swipeDir == 8)
+            {
+                int position = viewHolder.getAdapterPosition();
+                rooms.remove(position);
+                room_List.getAdapter().notifyDataSetChanged();
+            }
+
+        }
+    };
 }

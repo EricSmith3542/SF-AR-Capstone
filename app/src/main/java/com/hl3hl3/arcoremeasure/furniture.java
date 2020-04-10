@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
         furniture_recycle_view.setLayoutManager(new LinearLayoutManager(furniture.this));
         furniture_recycle_view.addItemDecoration(new furnitureSpl());
         furniture_recycle_view.setAdapter(new furnitureAdapter(furniture.this, this, furniture_list));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(furniture_recycle_view);
     }
 
     @Override
@@ -93,4 +96,24 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
         add_furniture.setView(view).show();
         return super.onOptionsItemSelected(item);
     }
+
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            //Remove swiped item from list and notify the RecyclerView
+            if(swipeDir == 4 || swipeDir == 8)
+            {
+                int position = viewHolder.getAdapterPosition();
+                furniture_list.remove(position);
+                ((furnitureAdapter)furniture_recycle_view.getAdapter()).removeItem(position);
+            }
+
+        }
+    };
 }

@@ -63,4 +63,9 @@ public class furnitureAdapter extends RecyclerView.Adapter<furnitureAdapter.Line
     {
         void furnitureClick(int position);
     }
+
+    public void removeItem(int position)
+    {
+        notifyItemRemoved(position);
+    }
 }
