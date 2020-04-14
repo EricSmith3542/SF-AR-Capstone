@@ -1,6 +1,7 @@
 package com.hl3hl3.arcoremeasure;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -17,13 +18,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class furniture extends AppCompatActivity implements furnitureAdapter.furnitureClickListener {
 
     private String room_name;
+    private int room_position;
     private RecyclerView furniture_recycle_view;
     private ArrayList<String> furniture_list = new ArrayList<>();
+    private final String filename = "data.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +46,36 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
         setContentView(R.layout.activity_furniture);
 
         room_name = getIntent().getStringExtra("ROOM_NAME");
+        room_position = getIntent().getIntExtra("ROOM_POS", -1);
 
-        //TODO: Use database to populate furniture list here
+        File jsonFile = new File(getFilesDir(), filename);
+        InputStream is = null;
+        JSONObject data = null;
+        try {
+            is = new FileInputStream(jsonFile);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = br.readLine();
+            StringBuilder sb = new StringBuilder();
+            while(line != null)
+            {
+                sb.append(line);
+                line = br.readLine();
+            }
+            data = new JSONObject(sb.toString());
+            JSONArray jsonRooms = (JSONArray) data.get("rooms");
+            JSONObject roomObject = jsonRooms.getJSONObject(room_position);
+            JSONArray furnitureArray = roomObject.getJSONArray("furniture");
+            for(int i = 0; i < furnitureArray.length(); i++)
+            {
+                furniture_list.add((String) ((JSONObject)furnitureArray.get(i)).get("name"));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         furniture_recycle_view = findViewById(R.id.furniture_list);
         furniture_recycle_view.setLayoutManager(new LinearLayoutManager(furniture.this));
@@ -48,7 +91,9 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
         Intent intent = new Intent(this, furnitureDetail.class);
 
         intent.putExtra("ROOM_NAME", room_name);
+        intent.putExtra("ROOM_POS", room_position);
         intent.putExtra("FURNITURE_NAME", furniture_list.get(position));
+        intent.putExtra("FURNITURE_POS", position);
 
         startActivity(intent);
     }
@@ -91,6 +136,38 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
                 adapter.notifyItemInserted(adapter.getItemCount());
 
                 //TODO: Add the new item to the database
+                File jsonFile = new File(getFilesDir(), filename);
+                JSONObject data = null, roomObject = null;
+
+                try {
+                    InputStream is = new FileInputStream(jsonFile);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String line = br.readLine();
+                    StringBuilder sb = new StringBuilder();
+                    while(line != null)
+                    {
+                        sb.append(line);
+                        line = br.readLine();
+                    }
+                    data = new JSONObject(sb.toString());
+
+                    roomObject = data.getJSONArray("rooms").getJSONObject(room_position);
+                    JSONArray furniture = roomObject.getJSONArray("furniture");
+
+                    JSONObject furnObject = new JSONObject();
+                    furnObject.put("name", name);
+                    furnObject.put("length", 0);
+                    furnObject.put("width", 0);
+                    furnObject.put("comments", "");
+
+                    furniture.put(furnObject);
+
+                    writeDataToFile(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         add_furniture.setView(view).show();
@@ -112,8 +189,46 @@ public class furniture extends AppCompatActivity implements furnitureAdapter.fur
                 int position = viewHolder.getAdapterPosition();
                 furniture_list.remove(position);
                 ((furnitureAdapter)furniture_recycle_view.getAdapter()).removeItem(position);
+
+
+                File jsonFile = new File(getFilesDir(), filename);
+                InputStream is = null;
+                JSONObject data = null;
+                try {
+                    is = new FileInputStream(jsonFile);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String line = br.readLine();
+                    StringBuilder sb = new StringBuilder();
+                    while(line != null)
+                    {
+                        sb.append(line);
+                        line = br.readLine();
+                    }
+                    data = new JSONObject(sb.toString());
+                    data.getJSONArray("rooms").getJSONObject(room_position).getJSONArray("furniture").remove(position);
+                    writeDataToFile(data);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
     };
+
+    private void writeDataToFile(JSONObject data)
+    {
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput(filename, Context.MODE_PRIVATE);
+            fos.write(data.toString().getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

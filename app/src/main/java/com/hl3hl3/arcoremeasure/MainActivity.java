@@ -2,6 +2,7 @@ package com.hl3hl3.arcoremeasure;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -17,12 +18,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LinearAdapter.itemClickListener {
 
     private RecyclerView room_List;
     private ArrayList<String> rooms = new ArrayList<>();
+    private final String filename = "data.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +45,31 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
         setContentView(R.layout.activity_main);
 
         //TODO: Populate array with database
+        File jsonFile = new File(getFilesDir(), filename);
+        InputStream is = null;
+        JSONObject data = null;
+        try {
+            is = new FileInputStream(jsonFile);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = br.readLine();
+            StringBuilder sb = new StringBuilder();
+            while(line != null)
+            {
+                sb.append(line);
+                line = br.readLine();
+            }
+            data = new JSONObject(sb.toString());
+            JSONArray jsonRooms = (JSONArray) data.get("rooms");
+            for (int i = 0; i < jsonRooms.length(); i ++) {
+                rooms.add((String) ((JSONObject)jsonRooms.get(i)).get("name"));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         room_List = findViewById(R.id.room_list);
         room_List.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -43,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
     public void itemClick(int position) {
         Intent intent = new Intent(this, furniture.class);
         intent.putExtra("ROOM_NAME", rooms.get(position));
+        intent.putExtra("ROOM_POS", position);
         startActivity(intent);
     }
 
@@ -84,6 +125,39 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
                 adapter.notifyItemInserted(adapter.getItemCount());
 
                 //TODO: Add the new item to the database
+                File jsonFile = new File(getFilesDir(), filename);
+                JSONObject data = null, roomObject = null;
+
+                try {
+                    if(jsonFile.createNewFile())
+                    {
+                        data = new JSONObject();
+                        data.put("rooms", new JSONArray());
+                    }
+                    else
+                    {
+                        InputStream is = new FileInputStream(jsonFile);
+                        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                        String line = br.readLine();
+                        StringBuilder sb = new StringBuilder();
+                        while(line != null)
+                        {
+                            sb.append(line);
+                            line = br.readLine();
+                        }
+                        data = new JSONObject(sb.toString());
+                    }
+                    roomObject = new JSONObject();
+                    roomObject.put("name", name);
+                    roomObject.put("furniture", new JSONArray());
+                    ((JSONArray)data.get("rooms")).put(roomObject);
+
+                    writeDataToFile(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
         add_room.setView(view).show();
@@ -106,8 +180,45 @@ public class MainActivity extends AppCompatActivity implements LinearAdapter.ite
                 int position = viewHolder.getAdapterPosition();
                 rooms.remove(position);
                 room_List.getAdapter().notifyDataSetChanged();
+
+                File jsonFile = new File(getFilesDir(), filename);
+                InputStream is = null;
+                JSONObject data = null;
+                try {
+                    is = new FileInputStream(jsonFile);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String line = br.readLine();
+                    StringBuilder sb = new StringBuilder();
+                    while(line != null)
+                    {
+                        sb.append(line);
+                        line = br.readLine();
+                    }
+                    data = new JSONObject(sb.toString());
+                    data.getJSONArray("rooms").remove(position);
+                    writeDataToFile(data);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
     };
+
+    private void writeDataToFile(JSONObject data)
+    {
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput(filename, Context.MODE_PRIVATE);
+            fos.write(data.toString().getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
